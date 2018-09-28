@@ -1,0 +1,6 @@
+# ignore auto-generated LaTeX files
+*.aux
+*.log
+*.log
+*.out
+*.toc
