@@ -5,6 +5,14 @@ int currentChar = 0;
 bool checkCmd(char* cmd) {
   return !memcmp(cmd,strReceived,strlen(cmd));
 }
+void acknowledge() {
+  Serial.print("received: ");
+  for (int x = 0; x<max_cmd_length && strReceived[x]!='\n'; x++)
+    Serial.write(strReceived[x]);
+  Serial.write('\n');
+  //sends "received: [text]" back
+  //  to acknowledge to .py script that it's been received
+}
 
 void setup() {
   Serial.begin(9600);
@@ -19,18 +27,20 @@ void loop() {
     //read Serial into strReceived
     //max length is 20, after which it loops around to loc 0
 
-    if (c=='\n') {
+    if (c=='\n') { //commands end in \n
       currentChar = 0;
-      Serial.print("received: ");
-      Serial.println(strReceived);
-      //commands end in \n
-      //sends "received: [text]" back
-      //  to acknowledge to .py script that it's been received
+      acknowledge();
 
-      if (checkCmd("on"))
+      if (checkCmd("hi"))
+        Serial.print("hi\n");
+      else if (checkCmd("on"))
         digitalWrite(LED_BUILTIN,HIGH);
       else if (checkCmd("off"))
         digitalWrite(LED_BUILTIN,LOW);
+      else if (checkCmd("num")) {
+        Serial.write(strReceived[3]+1);
+        Serial.write('\n');
+      }
       //COMMANDS ADDED HERE
     }
   }
