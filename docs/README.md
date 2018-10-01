@@ -1,4 +1,4 @@
-# mate2018/docs
+# mate2019/docs
 
 > technical documentation for MATE 2019
 
