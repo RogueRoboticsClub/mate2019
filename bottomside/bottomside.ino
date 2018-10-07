@@ -37,6 +37,8 @@ void loop() {
         digitalWrite(LED_BUILTIN,HIGH);
       else if (checkCmd("off"))
         digitalWrite(LED_BUILTIN,LOW);
+      else if (checkCmd("analogwrite"))
+        analogWrite(strReceived[10],strReceived[11]);
       else if (checkCmd("num")) { //takes a number and returns that number + 1
         Serial.write(strReceived[3]+1);
         Serial.write('\n');

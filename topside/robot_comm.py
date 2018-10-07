@@ -31,12 +31,7 @@ def commandwithresponse(cmd,args=[]): #send command, get response, and returns i
     time.sleep(.01)
     return [x for x in readln()][:-1]
 
-#STARTUP
-print('Waiting for Arduino connection...')
-waitForReady()
-print('Connected')
-
-#LOOP
-while True:
-    print(commandwithresponse('num',[4]))
-    time.sleep(.1)
+def startup():
+    print('Waiting for Arduino connection...')
+    waitForReady()
+    print('Connected')
