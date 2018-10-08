@@ -31,9 +31,7 @@ void loop() {
       currentChar = 0;
       acknowledge();
 
-      if (checkCmd("hi"))
-        Serial.print("hi\n");
-      else if (checkCmd("on"))
+      if (checkCmd("on"))
         digitalWrite(LED_BUILTIN,HIGH);
       else if (checkCmd("off"))
         digitalWrite(LED_BUILTIN,LOW);
