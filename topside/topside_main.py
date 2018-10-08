@@ -44,6 +44,8 @@ def checkEvents(): #called every frame; checks for any inputs
                 ROV.trySendCmd('on')
             elif event.key == pygame.K_RIGHT:
                 ROV.trySendCmd('off')
+            elif event.key == pygame.K_w:
+                print(ROV.thrusterspeed(1,1))
         elif event.type == pygame.MOUSEBUTTONDOWN: #check for button press and call a callback
             pos = event.dict['pos']
             for btn in btns:

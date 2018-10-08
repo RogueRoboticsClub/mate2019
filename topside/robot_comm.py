@@ -56,6 +56,8 @@ def tryCommandWithResponse(cmd,args=[]): #tries to send a command with a respons
     except Exception as e:
         status = 'Error: '+str(e)
     return bytes()
+def thrusterspeed(thruster,speed):
+    trySendCmd('thrusterspeed',[thruster]+[x for x in int.to_bytes(int(speed*400)+1500,2,byteorder='big')])
 def getPort(): #get the port associated with Arduino
     ports = list(serial.tools.list_ports.comports())
     for p in ports:

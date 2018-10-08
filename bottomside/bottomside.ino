@@ -1,5 +1,7 @@
+#include <Servo.h>
+
 #define max_cmd_length 20
-char strReceived[max_cmd_length];
+unsigned char strReceived[max_cmd_length];
 int currentChar = 0;
 
 bool checkCmd(char* cmd) {
@@ -14,9 +16,15 @@ void acknowledge() {
   //  to acknowledge to .py script that it's been received
 }
 
+Servo thrusters[6];
+
 void setup() {
   Serial.begin(9600);
   pinMode(LED_BUILTIN,OUTPUT);
+  for (int i=0;i<6;i++) {
+    thrusters[i].attach(9+i); //WHAT PINS?
+    thrusters[i].writeMicroseconds(1500); //stop
+  }
 }
 
 void loop() {
@@ -31,12 +39,15 @@ void loop() {
       currentChar = 0;
       acknowledge();
 
-      if (checkCmd("on"))
+      if (checkCmd("hi"))
+        Serial.write("hi\n");
+      else if (checkCmd("on"))
         digitalWrite(LED_BUILTIN,HIGH);
       else if (checkCmd("off"))
         digitalWrite(LED_BUILTIN,LOW);
-      else if (checkCmd("analogwrite"))
-        analogWrite(strReceived[10],strReceived[11]);
+      else if (checkCmd("thrusterspeed"))
+        if (strReceived[10] < 6)
+          thrusters[strReceived[13]].writeMicroseconds((int)(strReceived[14] << 8) + (int)strReceived[15]);
       else if (checkCmd("num")) { //takes a number and returns that number + 1
         Serial.write(strReceived[3]+1);
         Serial.write('\n');
