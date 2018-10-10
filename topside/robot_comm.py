@@ -56,8 +56,8 @@ def tryCommandWithResponse(cmd,args=[]): #tries to send a command with a respons
     except Exception as e:
         status = 'Error: '+str(e)
     return bytes()
-def thrusterspeed(thruster,speed):
-    trySendCmd('thrusterspeed',[thruster]+[x for x in int.to_bytes(int(speed*400)+1500,2,byteorder='big')])
+def setSpeed(thruster,speed):
+    trySendCmd('speed',[thruster]+[x for x in int.to_bytes(int(speed*400)+1500,2,byteorder='big')])
 def getPort(): #get the port associated with Arduino
     ports = list(serial.tools.list_ports.comports())
     for p in ports:
@@ -74,10 +74,8 @@ def connect(): #connect to Arduino
     except Exception as e:
         status = 'Error: '+str(e)
     status = 'Connecting...'
-    print('Waiting for Arduino connection...')
     waitForReady()
     status = 'Connected'
-    print('Connected')
 def connectBackground(): #connect in the background, allowing other processes to run in the meantime
     global status
     if status != 'Connecting...':

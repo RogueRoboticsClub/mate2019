@@ -16,13 +16,13 @@ void acknowledge() {
   //  to acknowledge to .py script that it's been received
 }
 
-Servo thrusters[6];
+Servo thrusters[7]; //6 thrusters and one camera servo
 
 void setup() {
   Serial.begin(9600);
   pinMode(LED_BUILTIN,OUTPUT);
-  for (int i=0;i<6;i++) {
-    thrusters[i].attach(9+i); //WHAT PINS?
+  for (int i=0;i<7;i++) {
+    thrusters[i].attach(2+i); //WHAT PINS?
     thrusters[i].writeMicroseconds(1500); //stop
   }
 }
@@ -45,10 +45,10 @@ void loop() {
         digitalWrite(LED_BUILTIN,HIGH);
       else if (checkCmd("off"))
         digitalWrite(LED_BUILTIN,LOW);
-      else if (checkCmd("thrusterspeed"))
-        if (strReceived[10] < 6)
-          thrusters[strReceived[13]].writeMicroseconds((int)(strReceived[14] << 8) + (int)strReceived[15]);
-      else if (checkCmd("num")) { //takes a number and returns that number + 1
+      else if (checkCmd("speed")) {
+        if (strReceived[5] < 7)
+          thrusters[strReceived[5]].writeMicroseconds((int)(strReceived[6] << 8) + (int)strReceived[7]);
+      } else if (checkCmd("num")) { //takes a number and returns that number + 1 (EXAMPLE)
         Serial.write(strReceived[3]+1);
         Serial.write('\n');
       }
