@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+#TODO: calc_thrusts.py here
+
 import robot_comm as ROV
 import random
 
