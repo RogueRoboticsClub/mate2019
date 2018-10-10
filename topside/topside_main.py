@@ -8,10 +8,18 @@ windowSize = (1000,600) #TODO: make this scale for different screen sizes?
 pygame.init()
 window = pygame.display.set_mode(windowSize)
 font = pygame.font.SysFont('Arial',20) #main font
-pygame.display.set_caption('Rogue Robotics ROV Control')
 btns = [] #list of: (pygame.Rectangle button position, function to call when pressed)
 buttonClickPos = (0,0) #set when someone clicks a button; the click's position relative to the button's corner
 camServoPosition = 0 #current position of camera servo
+
+pygame.display.set_caption('Rogue Robotics ROV Control')
+try:
+    pygame.display.set_icon(pygame.image.load('Logo.png'))
+except:
+    try:
+        pygame.display.set_icon(pygame.image.load('topside/Logo.png'))
+    except:
+        pass
 
 backgroundColor = pygame.Color(255,255,255,255)
 textColor = pygame.Color(0,0,0,255)
