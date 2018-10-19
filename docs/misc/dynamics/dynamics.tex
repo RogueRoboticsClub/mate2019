@@ -61,13 +61,14 @@ where, for $i$ between $1$ and $n$:
     \sin\psi_i\cos\alpha_i \\
     \sin\psi_i\sin\alpha_i \\
     \cos\psi_i \\
-    r_i\cos\psi_i\cos\theta_i - r_i\sin\psi_i\cos\alpha_i\sin\theta_i\sin\phi_i \\
-    r_i\sin\psi_i\cos\alpha_i\sin\theta_i\cos\phi_i - r_i\cos\psi_i\cos\theta_i \\
-    -r_i\sin\psi_i\sin\theta_i\cos(\alpha_i+\phi_i)
+    r_i\sin\theta_i\sin\phi_i\cos\psi_i - r_i\cos\theta_i\sin\psi_i\sin\alpha_i \\
+    r_i\cos\theta_i\sin\psi_i\cos\alpha_i - r_i\sin\theta_i\cos\phi_i\cos\psi_i \\
+    r_i\sin\theta_i\sin\psi_i\sin(\alpha_i-\phi_i)
   \end{bmatrix}
 \end{equation}
+This is an extension of our two-dimensional model by considering torque as $\vec{\tau} = \vec{r} \times \vec{f}$. Note that when $\theta = \pi/2$ and $\psi = \pi/2$, the model reduces to the two-dimensional case (albeit with slightly different angle naming conventions).
 
-To recap, the control problem for the ROV can be stated as this: given a desired net force/torque $\vec{F}$ on the ROV (typically from the joystick input), calculate the motor thrusts $\vec{f}$ needed to produce this desired resultant. In the case of the Rogue Robotics ROV, we have $n=6$, meaning that this is a well-determined system (the matrix $\vec{B}$ is square). Then, in most cases, there is a unique solution vector $\vec{f} = \inv{\vec{B}}\vec{F}$. Since $\vec{B}$ is fixed by the ROV design, We can pre-compute its inverse, making the calculation very fast.
+To recap, the control problem for the ROV can be stated as this: given a desired net force/torque $\vec{F}$ on the ROV (typically from the joystick input), calculate the motor thrusts $\vec{f}$ needed to produce this desired resultant. In some cases (i.e.\ if $n=6$ and $\vec{B}$ is nonsingular), there is a unique solution vector $\vec{f} = \inv{\vec{B}}\vec{F}$, which can be quickly found by pre-computing $\inv{\vec{B}}$. However, in many physical cases, $\vec{B}$ is not full rank, making the system over- or under-determined. In the former case, we can at best achieve an approximate solution (such as a least squares solution for the residual); in the latter case, we try to find the optimal solution (such as by minimizing the solution norm).
 
 \begin{figure}[ht]
   \centering
