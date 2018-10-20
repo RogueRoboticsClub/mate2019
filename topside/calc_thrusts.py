@@ -55,6 +55,14 @@ class Solver(object):
             return solution, False
 
 
+    # get the resultant that would be produced from the given thrusts
+    # this is useful for debugging
+    # optional: tolerance for result reporting (default 0.0001)
+    # returns:  resultant force/torque vector on ROV
+    def reverse_solve(self, thrusts, tol=0.0001):
+        return self.__zero(np.matmul(self.structure_matrix, thrusts), tol=tol)
+
+
     # private ultility function
     # zeros values in a matrix that are lesser in magnitude than tolerance
     def __zero(self, mat, tol=1e-10):
@@ -95,7 +103,7 @@ if __name__ == '__main__':
         print(thrusts)
     else:
         print('The algorithm failed to find a solution. Best attempt:')
-        print('  ', solution)
+        print('  ', thrusts)
         print('This yields a resultant of:')
-        print('  ', zero(np.matmul(DART, solution), tol=1e-8))
+        print('  ', ThrustSolver.reverse_solve(thrusts))
         print('Check that the objective is feasible with this design.')
