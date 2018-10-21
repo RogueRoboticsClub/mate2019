@@ -59,9 +59,10 @@ def tryCommandWithResponse(cmd,args=[]): #tries to send a command with a respons
 def setSpeed(thruster,speed):
     trySendCmd('speed',[thruster]+[x for x in int.to_bytes(int(speed*400)+1500,2,byteorder='big')])
 def getPort(): #get the port associated with Arduino
-    ports = list(serial.tools.list_ports.comports())
+    ports = serial.tools.list_ports.comports()
     for p in ports:
-        if p.description.find('Arduino') != -1:
+        print(p.manufacturer)
+        if p.manufacturer.find('Arduino') != -1:
             return p.device
     global status
     status = 'No Arduino found'
@@ -73,6 +74,7 @@ def connect(): #connect to Arduino
         arduino = serial.Serial(getPort(),9600)
     except Exception as e:
         status = 'Error: '+str(e)
+        return
     status = 'Connecting...'
     waitForReady()
     status = 'Connected'
