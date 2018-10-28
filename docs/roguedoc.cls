@@ -74,9 +74,10 @@
 \newcommand{\colorhead}{
   \thispagestyle{empty}
   \begin{tikzpicture}[overlay, remember picture]
-    \draw let \p1 = (current page.west), \p2 = (current page.east) in
-      node[minimum width=\x2-\x1, minimum height=3cm, draw, rectangle, fill overzoom image=wave.pdf, draw=white, anchor=north west, align=left, text width=\x2-\x1] at ($(current page.north west)$) {};
+  \fill[fill overzoom image=wave.pdf, draw=white, fill=white]
+    (current page.north west) rectangle ++(\paperwidth, -1.5cm);
   \end{tikzpicture}
+
 }
 
 % orange footer
