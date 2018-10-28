@@ -7,7 +7,7 @@ FNAME='rogue2019'
 echo 'BUILD.SH: welcome! i will dutifully compile your documentation'
 echo '          if you like, you can run TeX in --verbose mode'
 
-# check for --quiet flag (yes, this is sloppy)
+# check for --verbose flag (yes, this is sloppy)
 function compile()
 {
   if [ "$1" == '--verbose' ]
