@@ -3,6 +3,7 @@
 import pygame
 import robot_comm as ROV
 import speed_control as speed
+import xbox_inp as xbox
 
 windowSize = (1000,600) #TODO: make this scale for different screen sizes?
 pygame.init()
@@ -147,7 +148,7 @@ movementKeys = { #list of: key name -> (value in speed.directionInputted table, 
     pygame.K_j: (3,-1)
 }
 def checkEvents(): #called every frame; checks for any inputs
-    for event in pygame.event.get():
+    for event in pygame.event.get(): #TODO: dont do this if there's an xbox
         if event.type == pygame.KEYDOWN:
             if event.key in movementKeys:
                 speed.updateDirection(movementKeys[event.key][0],movementKeys[event.key][1])
@@ -164,6 +165,14 @@ def checkEvents(): #called every frame; checks for any inputs
                     break
         elif event.type == pygame.QUIT: #X button pressed
             quit()
+    inps = None
+    try:
+        inps = xbox.get_xbox_inps()
+    except Exception as e: #TODO: error handling highkey doesnt work
+        print(e)
+    if inps != None: #TODO: if none connected, let the user know
+        speed.updateDirection(1,inps.axes[1]) #TODO: do this for all different axes
+        #TODO: do stuff with buttons
 
 #TODO: add xbox control
 def mainLoop(): #main loop repeated every frame
