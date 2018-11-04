@@ -1,6 +1,6 @@
 #include <Servo.h>
 
-#define max_cmd_length 20
+#define max_cmd_length 25
 unsigned char strReceived[max_cmd_length];
 int currentChar = 0;
 
@@ -33,7 +33,7 @@ void loop() {
     strReceived[currentChar] = c;
     currentChar = (currentChar+1)%max_cmd_length;
     //read Serial into strReceived
-    //max length is 20, after which it loops around to loc 0
+    //max length is 25, after which it loops around to loc 0
 
     if (c=='\n') { //commands end in \n
       currentChar = 0;
@@ -45,9 +45,9 @@ void loop() {
         digitalWrite(LED_BUILTIN,HIGH);
       else if (checkCmd("off"))
         digitalWrite(LED_BUILTIN,LOW);
-      else if (checkCmd("speed")) {
-        if (strReceived[5] < 7)
-          thrusters[strReceived[5]].writeMicroseconds((int)(strReceived[6] << 8) + (int)strReceived[7]);
+      else if (checkCmd("speeds")) {
+        for (int i=0;i<7;i++)
+          thrusters[i].writeMicroseconds((int)(strReceived[6+(i*2)] << 8) + (int)strReceived[7+(i*2)]);
       } else if (checkCmd("num")) { //takes a number and returns that number + 1 (EXAMPLE)
         Serial.write(strReceived[3]+1);
         Serial.write('\n');

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import pygame
+import time
 import robot_comm as ROV
 import speed_control as speed
 import xbox_inp as xbox
@@ -11,7 +12,6 @@ window = pygame.display.set_mode(windowSize)
 font = pygame.font.SysFont('Arial',20) #main font
 btns = [] #list of: (pygame.Rectangle button position, function to call when pressed)
 buttonClickPos = (0,0) #set when someone clicks a button; the click's position relative to the button's corner
-camServoPosition = 0 #current position of camera servo
 
 pygame.display.set_caption('Rogue Robotics ROV Control')
 try:
@@ -39,9 +39,8 @@ def toggleLight(): #toggle Arduino's built in LED
 def setBuoyancySetting(num): #returns a func that, when called, uses the buttonClickPos value to update buoyancy settings; this is used for the settings sliders
     return lambda: speed.setBuoyancySetting(num,buttonClickPos[0]/100 - 1)
 def setCameraServo(): #when the camera slider is clicked, this is called; it sets the position of the camera servo based on click position
-    global camServoPosition
     camServoPosition = buttonClickPos[0]/100 - 1
-    ROV.setSpeed(6,camServoPosition)
+    speed.updateDirection(4,camServoPosition)
 
 def drawText(font,text,loc,color = textColor): #draw text in given font
     window.blit(font.render(text,True,color),loc)
@@ -120,7 +119,7 @@ def draw(): #full draw function; also generates list of buttons
             drawSlider(speed.motors[i],(xOffset+45,yOffset),(200,20),immovableSliderBackgroundColor)
             yOffset += 25
         drawText(font,'Cam',(xOffset,yOffset))
-        drawSlider(camServoPosition,(xOffset+45,yOffset),(200,20),movableSliderBackgroundColor,setCameraServo)
+        drawSlider(speed.directionInputted[4],(xOffset+45,yOffset),(200,20),movableSliderBackgroundColor,setCameraServo)
         yOffset += 25
         drawText(font,'Orientation:',(xOffset,yOffset))
         yOffset += font.get_height()
@@ -147,8 +146,16 @@ movementKeys = { #list of: key name -> (value in speed.directionInputted table, 
     pygame.K_l: (3,1),
     pygame.K_j: (3,-1)
 }
+xboxAxes = { #list of: axis num -> (value in speed.directionInputted table, multiplier, either -1 or 1)
+    0: (0,1),
+    1: (1,-1),
+    3: (3,1),
+    4: (2,-1)
+}
+updateCountdown = 0
 def checkEvents(): #called every frame; checks for any inputs
-    for event in pygame.event.get(): #TODO: dont do this if there's an xbox
+    time.sleep(.1)
+    for event in pygame.event.get():
         if event.type == pygame.KEYDOWN:
             if event.key in movementKeys:
                 speed.updateDirection(movementKeys[event.key][0],movementKeys[event.key][1])
@@ -171,13 +178,25 @@ def checkEvents(): #called every frame; checks for any inputs
     except Exception as e: #TODO: error handling highkey doesnt work
         print(e)
     if inps != None: #TODO: if none connected, let the user know
-        speed.updateDirection(1,inps.axes[1]) #TODO: do this for all different axes
-        #TODO: do stuff with buttons
+        for axis,dir in xboxAxes.items():
+            speed.updateDirection(dir[0],inps['axes'][axis]*dir[1])
+        if inps['buttons'][4] == 1:
+            speed.updateDirection(4, speed.directionInputted[4] - 0.05)
+        if inps['buttons'][5] == 1:
+            speed.updateDirection(4, speed.directionInputted[4] + 0.05)
+
+    global updateCountdown
+    updateCountdown -= 1
+    if updateCountdown <= 0:
+        if ROV.status == 'Connected':
+            speed.calculateNewMotorSpeeds()
+        updateCountdown = 5
+
 
 #TODO: add xbox control
 def mainLoop(): #main loop repeated every frame
-    draw()
     checkEvents()
+    draw()
 
 while True:
     mainLoop()

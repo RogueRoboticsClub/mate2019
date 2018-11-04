@@ -3,7 +3,6 @@ import time
 
 pygame.init()
 pygame.joystick.init()
-joystick = pygame.joystick.Joystick(0)
 def get_joystick():
     numJoysticks = pygame.joystick.get_count()
     if (numJoysticks != 1):
