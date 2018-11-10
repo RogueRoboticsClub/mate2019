@@ -1,5 +1,6 @@
+#!/usr/bin/python3
+
 import pygame
-import time
 
 pygame.init()
 pygame.joystick.init()
