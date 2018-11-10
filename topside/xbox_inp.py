@@ -19,4 +19,4 @@ def get_xbox_inps():
     axes = [joystick.get_axis(i) for i in range(joystick.get_numaxes())]
     buttons = [joystick.get_button(i) for i in range(joystick.get_numbuttons())]
     hat = joystick.get_hat(0)
-    return {"axes":axes,"buttons":buttons,"hat":hat}
+    return {"axes":axes, "buttons":buttons, "hat":hat}
