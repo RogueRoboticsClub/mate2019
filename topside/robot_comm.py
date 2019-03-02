@@ -64,7 +64,7 @@ def setSpeeds(speeds):
 def getPort(): #get the port associated with Arduino
     ports = serial.tools.list_ports.comports()
     for p in ports:
-        if p.manufacturer.find('Arduino') != -1:
+        if (p.manufacturer != None and p.manufacturer.find('Arduino') != -1) or (p.product == 'USB2.0-Serial'):
             return p.device
     global status
     status = 'No Arduino found'
