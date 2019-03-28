@@ -19,7 +19,7 @@ def process_img(frame):
 
 def get_contours(processed):
     # returns sets of outlines that make up each thresholded object and grabs the corresponding tuple based on cv2 version
-    cnts = cv2.findContours(processed.copy(), cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = cv2.findContours(processed.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
 
     return cnts
