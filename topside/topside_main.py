@@ -219,6 +219,8 @@ def checkEvents(): #called every frame; checks for any inputs
 
 #TODO: add xbox control
 def mainLoop(): #main loop repeated every frame
+    incrementCam(0)
+    incrementCam(1)
     checkEvents()
     draw()
 
