@@ -38,7 +38,7 @@ cameras = [None, None]
 def incrementCam(n):
     camNums[n] += 1
     camNums[n] %= getNumOfCams()
-    cameras[n] = getCamNum(camNums[n], (100,100))
+    cameras[n] = getCamNum(camNums[n], (340,300))
 
 lightStatus = False
 def toggleLight(): #toggle Arduino's built in LED
@@ -70,13 +70,13 @@ def drawVerticalSlider(percent,loc,size,color,callback = (lambda: None)): #same 
 def drawCameraFeed(camNum,loc,size): #TODO: get the camera feed and draw it
     drawClickableRect(loc,size,pygame.Color(0,0,0,255),lambda:None)
     try:
-        if camNum < len(cameras) and cameras[camNum].query_image():
+        if cameras[camNum] != None and camNum < len(cameras) and cameras[camNum].query_image():
             img = cameras[camNum].get_image()
             img = pygame.transform.scale(img,size)
             window.blit(img, loc)
     except SystemError:
         pass
-    drawText(font,'Cam Feed '+str(camNum),loc,pygame.Color(255,255,255,255))
+    drawText(font,'Cam Feed '+str(camNum+1),loc,pygame.Color(255,255,255,255))
 def draw(): #full draw function; also generates list of buttons
     global btns
     btns = []
@@ -96,6 +96,10 @@ def draw(): #full draw function; also generates list of buttons
     drawText(font,'I/K: up/down',(xOffset,yOffset))
     yOffset += font.get_height()*1
     drawText(font,'J/L: turn',(xOffset,yOffset))
+    yOffset += font.get_height()*1
+    drawText(font,'1: switch cam view 1',(xOffset,yOffset))
+    yOffset += font.get_height()*1
+    drawText(font,'2: switch cam view 2',(xOffset,yOffset))
     yOffset += font.get_height()*1
     drawText(font,'Click blue sliders to adjust',(xOffset,yOffset))
 
