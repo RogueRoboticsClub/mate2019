@@ -4,6 +4,7 @@
 
 import robot_comm as ROV
 import random
+from math import copysign, sqrt
 
 motors = [0,0,0,0,0,0,0] #motors 1-6; all values from -1 to 1
 directionInputted = [0,0,0,0,0] #L/R;Fwd/Back;U/D;Turn;Cam; all values from -1 to 1
@@ -17,12 +18,16 @@ def updateMotors(mots): #update motors to a new list of motors
             anyDifferent = True
     ROV.setSpeeds(mots)
     motors = mots
+
+def adjustVal(x):
+    return copysign(sqrt(abs(x)) / sqrt(3), x)
+
 def calculateNewMotorSpeeds(): #calculate new motor speeds, and call updateMotors with the speeds
     mots = [0,0,0,0,0,0,0] #TODO: do some quick maths and calculate motor speeds; below is some BS fake math
-    mots[0] = (buoyancySettings[0]+buoyancySettings[1]+buoyancySettings[3])/2
-    mots[1] = (buoyancySettings[0]+buoyancySettings[1]-buoyancySettings[3])/2
-    mots[2] = (-buoyancySettings[0]+buoyancySettings[1]+buoyancySettings[3])/2
-    mots[3] = (-buoyancySettings[0]+buoyancySettings[1]-buoyancySettings[3])/2
+    mots[0] = adjustVal(buoyancySettings[0]+buoyancySettings[1]+buoyancySettings[3])
+    mots[1] = adjustVal(buoyancySettings[0]+buoyancySettings[1]-buoyancySettings[3])
+    mots[2] = adjustVal(-buoyancySettings[0]+buoyancySettings[1]+buoyancySettings[3])
+    mots[3] = adjustVal(-buoyancySettings[0]+buoyancySettings[1]-buoyancySettings[3])
     mots[4] = directionInputted[2]
     mots[5] = directionInputted[2]
     mots[6] = directionInputted[2]
