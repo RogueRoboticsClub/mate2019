@@ -2,12 +2,15 @@
 
 import pygame
 import time
+import datetime
 import robot_comm as ROV
 import speed_control as speed
 import xbox_inp as xbox
+from cameras import getCams
 
 windowSize = (1000,600) #TODO: make this scale for different screen sizes?
 pygame.init()
+pygame.camera.init()
 window = pygame.display.set_mode(windowSize)
 font = pygame.font.SysFont('Arial',20) #main font
 btns = [] #list of: (pygame.Rectangle button position, function to call when pressed)
@@ -29,6 +32,9 @@ buttonColor = pygame.Color(0,255,0,255)
 sliderForegroundColor = pygame.Color(0,0,0,255)
 immovableSliderBackgroundColor = pygame.Color(0,255,0,255)
 movableSliderBackgroundColor = pygame.Color(0,255,255,255)
+
+lastCameraLoadTime = datetime.datetime(2000,1,1,1,1)
+cameras = []
 
 lightStatus = False
 def toggleLight(): #toggle Arduino's built in LED
@@ -59,6 +65,13 @@ def drawVerticalSlider(percent,loc,size,color,callback = (lambda: None)): #same 
     drawClickableRect((loc[0],loc[1]+(size[1]*(.5+percent/2))-size[0]/2),(size[0],size[0]),sliderForegroundColor,callback)
 def drawCameraFeed(camNum,loc,size): #TODO: get the camera feed and draw it
     drawClickableRect(loc,size,pygame.Color(0,0,0,255),lambda:None)
+    try:
+        if camNum < len(cameras) and cameras[camNum].query_image():
+            img = cameras[camNum].get_image()
+            img = pygame.transform.scale(img,size)
+            window.blit(img, loc)
+    except SystemError:
+        pass
     drawText(font,'Cam Feed '+str(camNum),loc,pygame.Color(255,255,255,255))
 def draw(): #full draw function; also generates list of buttons
     global btns
@@ -192,9 +205,13 @@ def checkEvents(): #called every frame; checks for any inputs
             speed.calculateNewMotorSpeeds()
         updateCountdown = 5
 
-
 #TODO: add xbox control
 def mainLoop(): #main loop repeated every frame
+    global cameras
+    global lastCameraLoadTime
+    if datetime.datetime.now() - lastCameraLoadTime > datetime.timedelta(seconds = 1):
+        lastCameraLoadTime = datetime.datetime.now()
+        cameras = getCams((340,300))
     checkEvents()
     draw()
 

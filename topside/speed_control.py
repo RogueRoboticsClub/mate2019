@@ -28,7 +28,8 @@ def calculateNewMotorSpeeds(): #calculate new motor speeds, and call updateMotor
     mots[6] = directionInputted[4]
     updateMotors(mots)
 def updateDirection(directionNumber,val): #update which direction you want to move; updates motors accordingly
-    if val > -1 and val < 1:
+    global directionInputted
+    if val >= -1 and val <= 1:
         directionInputted[directionNumber] = val
 def setBuoyancySetting(setting,val): #set a new buoyancy setting; updates motors accordingly
     buoyancySettings[setting] = val #TODO: save buoyancy settings in a file so you don't have to figure them out every time?
