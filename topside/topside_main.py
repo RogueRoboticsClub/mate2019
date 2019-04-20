@@ -6,7 +6,7 @@ import datetime
 import robot_comm as ROV
 import speed_control as speed
 import xbox_inp as xbox
-from cameras import getCams
+from cameras import getCamNum, getNumOfCams
 
 windowSize = (1000,600) #TODO: make this scale for different screen sizes?
 pygame.init()
@@ -33,8 +33,12 @@ sliderForegroundColor = pygame.Color(0,0,0,255)
 immovableSliderBackgroundColor = pygame.Color(0,255,0,255)
 movableSliderBackgroundColor = pygame.Color(0,255,255,255)
 
-lastCameraLoadTime = datetime.datetime(2000,1,1,1,1)
-cameras = []
+camNums = [-1,0]
+cameras = [None, None]
+def incrementCam(n):
+    camNums[n] += 1
+    camNums[n] %= getNumOfCams()
+    cameras[n] = getCamNum(camNums[n], (100,100))
 
 lightStatus = False
 def toggleLight(): #toggle Arduino's built in LED
@@ -172,6 +176,10 @@ def checkEvents(): #called every frame; checks for any inputs
         if event.type == pygame.KEYDOWN:
             if event.key in movementKeys:
                 speed.updateDirection(movementKeys[event.key][0],movementKeys[event.key][1])
+            elif event.key == pygame.K_1:
+                incrementCam(0)
+            elif event.key == pygame.K_2:
+                incrementCam(1)
         if event.type == pygame.KEYUP:
             if event.key in movementKeys:
                 speed.updateDirection(movementKeys[event.key][0],0)
@@ -207,11 +215,6 @@ def checkEvents(): #called every frame; checks for any inputs
 
 #TODO: add xbox control
 def mainLoop(): #main loop repeated every frame
-    global cameras
-    global lastCameraLoadTime
-    if datetime.datetime.now() - lastCameraLoadTime > datetime.timedelta(seconds = 1):
-        lastCameraLoadTime = datetime.datetime.now()
-        cameras = getCams((340,300))
     checkEvents()
     draw()
 
