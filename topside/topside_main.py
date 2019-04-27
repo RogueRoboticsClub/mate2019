@@ -64,9 +64,6 @@ def drawBtn(font,text,loc,color,callback): #draw button and add to buttons list
 def drawSlider(percent,loc,size,color,callback = (lambda: None)): #draw a slider with a given percentage (-1<p<1)
     drawClickableRect((loc[0],loc[1]+size[1]/4),(size[0],size[1]/2),color,callback)
     drawClickableRect((loc[0]+(size[0]*(.5+percent/2))-size[1]/2,loc[1]),(size[1],size[1]),sliderForegroundColor,callback)
-def drawVerticalSlider(percent,loc,size,color,callback = (lambda: None)): #same as above but it's vertical (this function is only used once)
-    drawClickableRect((loc[0]+size[0]/4,loc[1]),(size[0]/2,size[1]),color,callback)
-    drawClickableRect((loc[0],loc[1]+(size[1]*(.5+percent/2))-size[0]/2),(size[0],size[0]),sliderForegroundColor,callback)
 def drawCameraFeed(camNum,loc,size): #TODO: get the camera feed and draw it
     drawClickableRect(loc,size,pygame.Color(0,0,0,255),lambda:None)
     try:
@@ -141,13 +138,6 @@ def draw(): #full draw function; also generates list of buttons
             yOffset += 25
         drawText(font,'Cam',(xOffset,yOffset))
         drawSlider(speed.directionInputted[4],(xOffset+45,yOffset),(200,20),movableSliderBackgroundColor,setCameraServo)
-        yOffset += 25
-        drawText(font,'Orientation:',(xOffset,yOffset))
-        yOffset += font.get_height()
-        drawVerticalSlider(.75,(xOffset+100,yOffset),(20,200),immovableSliderBackgroundColor) #TODO: ask ROV for its orientation (scale of -1 to 1) and show it here; replace .75 on this line and .5 on next
-        drawSlider(.5,(xOffset+20/2,yOffset+100-20/2),(200,20),immovableSliderBackgroundColor)
-        drawText(font,'Pitch',(xOffset+120,yOffset))
-        drawText(font,'Roll',(xOffset,yOffset+100-20-font.get_height()))
     else:
         drawText(font,'Rogue Robotics ROV Control',(xOffset,0))
         yOffset += font.get_height()*1.5
