@@ -24,10 +24,10 @@ def adjustVal(x):
 
 def calculateNewMotorSpeeds(): #calculate new motor speeds, and call updateMotors with the speeds
     mots = [0,0,0,0,0,0,0] #TODO: do some quick maths and calculate motor speeds; below is some BS fake math
-    mots[0] = (buoyancySettings[0]+buoyancySettings[1]+buoyancySettings[2])/2
-    mots[1] = (buoyancySettings[0]+buoyancySettings[1]-buoyancySettings[2])/2
-    mots[2] = (-buoyancySettings[0]+buoyancySettings[1]+buoyancySettings[2])/2
-    mots[3] = (-buoyancySettings[0]+buoyancySettings[1]-buoyancySettings[2])/2
+    mots[0] = adjustVal(buoyancySettings[0]+buoyancySettings[1]+buoyancySettings[2])
+    mots[1] = adjustVal(buoyancySettings[0]+buoyancySettings[1]-buoyancySettings[2])
+    mots[2] = adjustVal(-buoyancySettings[0]+buoyancySettings[1]+buoyancySettings[2])
+    mots[3] = adjustVal(-buoyancySettings[0]+buoyancySettings[1]-buoyancySettings[2])
     mots[4] = directionInputted[2]
     mots[5] = directionInputted[2]
     mots[6] = directionInputted[2]
