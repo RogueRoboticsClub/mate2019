@@ -21,14 +21,15 @@ union() {
   }
   rotate([0, 90, 0])  // to axle piece
     translate([0, (HOOK_DIAMETER + AXLE_DIAMETER) / 2 + WALL_THICKNESS + 1, 0])
-    difference() {
-      inner = (AXLE_DIAMETER + DIAMETER_OFFSET) / 2;
-      outer = inner + WALL_THICKNESS;
-      screw = SCREW_DIAMETER / 2;
+      difference() {
+        inner = (AXLE_DIAMETER + DIAMETER_OFFSET) / 2;
+        outer = inner + WALL_THICKNESS;
+        screw = SCREW_DIAMETER / 2;
 
-      cylinder(r1=outer, r2=outer, h=30, center=true);
-      cylinder(r1=inner, r2=inner, h=30, center=true);
-      rotate([0, 90, 0])
-        cylinder(r1=screw, r2=screw, h=INFTY, center=true);
-    }
+        cylinder(r1=outer, r2=outer, h=30, center=true);
+        cylinder(r1=inner, r2=inner, h=30, center=true);
+        rotate([0, 90, 0])
+          cylinder(r1=screw, r2=screw, h=INFTY, center=true);
+      }
 }
+
