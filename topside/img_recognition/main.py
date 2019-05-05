@@ -10,7 +10,10 @@ cap = cv2.VideoCapture(0)
 while True:
     # split capture return values
     ret, frame = cap.read()
-    
+
+    # flip frame
+    frame = cv2.flip(frame, 1)   
+ 
     # resize frame and obtain ratio
     resized, ratio = detect_shapes.resize(frame)
 
@@ -24,6 +27,7 @@ while True:
     final = detect_shapes.draw_output(frame)
 
     # show image stream
+    cv2.imshow("Thresh", thresh)
     cv2.imshow("Image", final)
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break

@@ -3,15 +3,15 @@
 
 import cv2
 
-"""Reduce number of points representing curve using Ramer-Douglas-Peucker Algorithm or split-and-merge algorithm. Convert a curve to series of short line segments which becomes a subset of points defined by original curve."""
+"""Reduce number of points representing curve using Ramer-Douglas-Peucker Algorithm or split-and-merge algorithm. Convert a curve to series of short line segments which becomes a subset of points defined by original curve. NOTE: Rectangle offset is corrected in detect_shapes.py"""
 class ShapeDetector:
-    count = {'tri': 0, 'sqr': 0, 'rct': 0, 'cir': 0}
+    count = {'tri': 0, 'sqr': 0, 'rct': -1, 'cir': 0}
 
     def __init__(self):
        pass
  
-    def reset_count(self):
-        self.count = {'tri': 0, 'sqr': 0, 'rct': 0, 'cir': 0}
+    def refresh_count(self):
+        self.count = {'tri': 0, 'sqr': 0, 'rct': -1, 'cir': 0}
 
     def detect(self, c):
         # init shape name and approx contour
