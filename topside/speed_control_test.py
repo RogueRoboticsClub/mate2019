@@ -24,13 +24,13 @@ def adjustVal(x):
 
 def calculateNewMotorSpeeds(): #calculate new motor speeds, and call updateMotors with the speeds
     mots = [0,0,0,0,0,0,0] #TODO: do some quick maths and calculate motor speeds; below is some BS fake math
-    mots[1] = adjustVal(-directionInputted[0]-directionInputted[1]-directionInputted[3])
-    mots[3] = adjustVal(+directionInputted[0]-directionInputted[1]+directionInputted[3])
-    mots[4] = adjustVal(+directionInputted[0]+directionInputted[1]-directionInputted[3])
-    mots[5] = adjustVal(-directionInputted[0]+directionInputted[1]+directionInputted[3])
-    mots[0] = -directionInputted[2]
-    mots[2] = directionInputted[2]
-    #mots[6] = directionInputted[2]
+    mots[0] = directionInputted[0]#adjustVal(directionInputted[0]+directionInputted[1]+directionInputted[2])
+    mots[1] = directionInputted[1]#adjustVal(directionInputted[0]+directionInputted[1]-directionInputted[2])
+    mots[2] = directionInputted[2]#adjustVal(-directionInputted[0]+directionInputted[1]+directionInputted[2])
+    mots[3] = directionInputted[3]#adjustVal(-directionInputted[0]+directionInputted[1]-directionInputted[2])
+    mots[4] = buoyancySettings[0]#directionInputted[3]
+    mots[5] = buoyancySettings[1]#directionInputted[3]
+    mots[6] = buoyancySettings[2]#directionInputted[3]
     updateMotors(mots)
 def updateDirection(directionNumber,val): #update which direction you want to move; updates motors accordingly
     global directionInputted

@@ -48,9 +48,6 @@ void loop() {
       else if (checkCmd("speeds")) {
         for (int i=0;i<7;i++)
           thrusters[i].writeMicroseconds((int)(strReceived[6+(i*2)] << 8) + (int)strReceived[7+(i*2)]);
-      } else if (checkCmd("num")) { //takes a number and returns that number + 1 (EXAMPLE)
-        Serial.write(strReceived[3]+1);
-        Serial.write('\n');
       }
       //COMMANDS ADDED HERE
     }

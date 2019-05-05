@@ -2,12 +2,15 @@
 
 import pygame
 import time
+import datetime
 import robot_comm as ROV
 import speed_control as speed
 import xbox_inp as xbox
+from cameras import getCamNum, getNumOfCams
 
 windowSize = (1000,600) #TODO: make this scale for different screen sizes?
 pygame.init()
+pygame.camera.init()
 window = pygame.display.set_mode(windowSize)
 font = pygame.font.SysFont('Arial',20) #main font
 btns = [] #list of: (pygame.Rectangle button position, function to call when pressed)
@@ -29,6 +32,13 @@ buttonColor = pygame.Color(0,255,0,255)
 sliderForegroundColor = pygame.Color(0,0,0,255)
 immovableSliderBackgroundColor = pygame.Color(0,255,0,255)
 movableSliderBackgroundColor = pygame.Color(0,255,255,255)
+
+camNums = [-1,0]
+cameras = [None, None]
+def incrementCam(n):
+    camNums[n] += 1
+    camNums[n] %= getNumOfCams()
+    cameras[n] = getCamNum(camNums[n], (340,300))
 
 lightStatus = False
 def toggleLight(): #toggle Arduino's built in LED
@@ -54,12 +64,16 @@ def drawBtn(font,text,loc,color,callback): #draw button and add to buttons list
 def drawSlider(percent,loc,size,color,callback = (lambda: None)): #draw a slider with a given percentage (-1<p<1)
     drawClickableRect((loc[0],loc[1]+size[1]/4),(size[0],size[1]/2),color,callback)
     drawClickableRect((loc[0]+(size[0]*(.5+percent/2))-size[1]/2,loc[1]),(size[1],size[1]),sliderForegroundColor,callback)
-def drawVerticalSlider(percent,loc,size,color,callback = (lambda: None)): #same as above but it's vertical (this function is only used once)
-    drawClickableRect((loc[0]+size[0]/4,loc[1]),(size[0]/2,size[1]),color,callback)
-    drawClickableRect((loc[0],loc[1]+(size[1]*(.5+percent/2))-size[0]/2),(size[0],size[0]),sliderForegroundColor,callback)
 def drawCameraFeed(camNum,loc,size): #TODO: get the camera feed and draw it
     drawClickableRect(loc,size,pygame.Color(0,0,0,255),lambda:None)
-    drawText(font,'Cam Feed '+str(camNum),loc,pygame.Color(255,255,255,255))
+    try:
+        if cameras[camNum] != None and camNum < len(cameras) and cameras[camNum].query_image():
+            img = cameras[camNum].get_image()
+            img = pygame.transform.scale(img,size)
+            window.blit(img, loc)
+    except SystemError:
+        pass
+    drawText(font,'Cam Feed '+str(camNum+1),loc,pygame.Color(255,255,255,255))
 def draw(): #full draw function; also generates list of buttons
     global btns
     btns = []
@@ -79,6 +93,10 @@ def draw(): #full draw function; also generates list of buttons
     drawText(font,'I/K: up/down',(xOffset,yOffset))
     yOffset += font.get_height()*1
     drawText(font,'J/L: turn',(xOffset,yOffset))
+    yOffset += font.get_height()*1
+    drawText(font,'1: switch cam view 1',(xOffset,yOffset))
+    yOffset += font.get_height()*1
+    drawText(font,'2: switch cam view 2',(xOffset,yOffset))
     yOffset += font.get_height()*1
     drawText(font,'Click blue sliders to adjust',(xOffset,yOffset))
 
@@ -120,13 +138,6 @@ def draw(): #full draw function; also generates list of buttons
             yOffset += 25
         drawText(font,'Cam',(xOffset,yOffset))
         drawSlider(speed.directionInputted[4],(xOffset+45,yOffset),(200,20),movableSliderBackgroundColor,setCameraServo)
-        yOffset += 25
-        drawText(font,'Orientation:',(xOffset,yOffset))
-        yOffset += font.get_height()
-        drawVerticalSlider(.75,(xOffset+100,yOffset),(20,200),immovableSliderBackgroundColor) #TODO: ask ROV for its orientation (scale of -1 to 1) and show it here; replace .75 on this line and .5 on next
-        drawSlider(.5,(xOffset+20/2,yOffset+100-20/2),(200,20),immovableSliderBackgroundColor)
-        drawText(font,'Pitch',(xOffset+120,yOffset))
-        drawText(font,'Roll',(xOffset,yOffset+100-20-font.get_height()))
     else:
         drawText(font,'Rogue Robotics ROV Control',(xOffset,0))
         yOffset += font.get_height()*1.5
@@ -159,6 +170,10 @@ def checkEvents(): #called every frame; checks for any inputs
         if event.type == pygame.KEYDOWN:
             if event.key in movementKeys:
                 speed.updateDirection(movementKeys[event.key][0],movementKeys[event.key][1])
+            elif event.key == pygame.K_1:
+                incrementCam(0)
+            elif event.key == pygame.K_2:
+                incrementCam(1)
         if event.type == pygame.KEYUP:
             if event.key in movementKeys:
                 speed.updateDirection(movementKeys[event.key][0],0)
@@ -192,9 +207,10 @@ def checkEvents(): #called every frame; checks for any inputs
             speed.calculateNewMotorSpeeds()
         updateCountdown = 5
 
-
 #TODO: add xbox control
 def mainLoop(): #main loop repeated every frame
+    incrementCam(0)
+    incrementCam(1)
     checkEvents()
     draw()
 
