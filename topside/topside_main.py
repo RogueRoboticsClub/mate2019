@@ -154,8 +154,8 @@ movementKeys = { #list of: key name -> (value in speed.directionInputted table, 
     pygame.K_a: (0,-1),
     pygame.K_i: (2,1),
     pygame.K_k: (2,-1),
-    pygame.K_l: (3,1),
-    pygame.K_j: (3,-1)
+    pygame.K_l: (3,.5),
+    pygame.K_j: (3,-.5)
 }
 xboxAxes = { #list of: axis num -> (value in speed.directionInputted table, multiplier, either -1 or 1)
     0: (0,1),
@@ -209,8 +209,6 @@ def checkEvents(): #called every frame; checks for any inputs
 
 #TODO: add xbox control
 def mainLoop(): #main loop repeated every frame
-    incrementCam(0)
-    incrementCam(1)
     checkEvents()
     draw()
 
