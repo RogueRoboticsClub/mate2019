@@ -23,6 +23,8 @@ def getCam(name, size):
             cam.start()
         except SystemError:
             pass
+        except OSError:
+            pass
         camerasLoaded[name] = cam
         return cam
 

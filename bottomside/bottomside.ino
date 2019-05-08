@@ -3,6 +3,7 @@
 #define max_cmd_length 25
 unsigned char strReceived[max_cmd_length];
 int currentChar = 0;
+Servo boxServo;
 
 bool checkCmd(char* cmd) {
   return !memcmp(cmd,strReceived,strlen(cmd));
@@ -21,10 +22,12 @@ Servo thrusters[7]; //6 thrusters and one camera servo
 void setup() {
   Serial.begin(9600);
   pinMode(LED_BUILTIN,OUTPUT);
-  for (int i=0;i<7;i++) {
+  for (int i=0;i<6;i++) {
     thrusters[i].attach(2+i); //WHAT PINS?
     thrusters[i].writeMicroseconds(1500); //stop
   }
+  boxServo.attach(9);
+  boxServo.write(0);
 }
 
 void loop() {
@@ -46,9 +49,12 @@ void loop() {
       else if (checkCmd("off"))
         digitalWrite(LED_BUILTIN,LOW);
       else if (checkCmd("speeds")) {
-        for (int i=0;i<7;i++)
+        for (int i=0;i<6;i++)
           thrusters[i].writeMicroseconds((int)(strReceived[6+(i*2)] << 8) + (int)strReceived[7+(i*2)]);
-      }
+      } else if (checkCmd("open"))
+        boxServo.write(85);
+      else if (checkCmd("close"))
+        boxServo.write(0);
       //COMMANDS ADDED HERE
     }
   }

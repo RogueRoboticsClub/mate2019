@@ -46,6 +46,9 @@ def toggleLight(): #toggle Arduino's built in LED
     lightStatus = not lightStatus
     ROV.trySendCmd('on' if lightStatus else 'off')
 
+def setBoxOpen(open): #set whether box is open or not
+    ROV.trySendCmd('open' if open else 'close')
+
 def setBuoyancySetting(num): #returns a func that, when called, uses the buttonClickPos value to update buoyancy settings; this is used for the settings sliders
     return lambda: speed.setBuoyancySetting(num,buttonClickPos[0]/100 - 1)
 def setCameraServo(): #when the camera slider is clicked, this is called; it sets the position of the camera servo based on click position
@@ -154,8 +157,8 @@ movementKeys = { #list of: key name -> (value in speed.directionInputted table, 
     pygame.K_a: (0,-1),
     pygame.K_i: (2,1),
     pygame.K_k: (2,-1),
-    pygame.K_l: (3,.5),
-    pygame.K_j: (3,-.5)
+    pygame.K_l: (3,1),
+    pygame.K_j: (3,-1)
 }
 xboxAxes = { #list of: axis num -> (value in speed.directionInputted table, multiplier, either -1 or 1)
     0: (0,1),
@@ -174,6 +177,10 @@ def checkEvents(): #called every frame; checks for any inputs
                 incrementCam(0)
             elif event.key == pygame.K_2:
                 incrementCam(1)
+            elif event.key == pygame.K_LEFTBRACKET:
+                setBoxOpen(True)
+            elif event.key == pygame.K_RIGHTBRACKET:
+                setBoxOpen(False)
         if event.type == pygame.KEYUP:
             if event.key in movementKeys:
                 speed.updateDirection(movementKeys[event.key][0],0)
